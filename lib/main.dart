@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:quizler_app/question.dart';
+import 'package:quizler_app/quiz_brain.dart';
+
+QuizBrain quizBrain = QuizBrain();
 
 void main() => runApp(Quizzler());
 
@@ -41,7 +44,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questionBank[trackQuestionNumber].question,
+                quizBrain.questionBank[trackQuestionNumber].question,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 25.0,
@@ -67,7 +70,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                final checkAnswer = questionBank[trackQuestionNumber].answer;
+                final checkAnswer =
+                    quizBrain.questionBank[trackQuestionNumber].answer;
                 if (checkAnswer == true) {}
                 //The user picked true.
                 setState(() {
@@ -93,7 +97,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                final checkAnswer = questionBank[trackQuestionNumber].answer;
+                final checkAnswer =
+                    quizBrain.questionBank[trackQuestionNumber].answer;
                 if (checkAnswer == false) {}
                 //The user picked false.
                 setState(() {
