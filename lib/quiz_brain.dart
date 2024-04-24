@@ -1,7 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+
 import 'question.dart';
 
 class QuizBrain {
-  List<Question> questionBank = [
+  int questionNumber = 0;
+  final List<Icon> scoreKeeper = [];
+  final List<Question> _questionBank = [
     Question(
         question: 'Some cats are actually allergic to humans', answer: true),
     Question(
@@ -44,4 +49,26 @@ class QuizBrain {
             'In West Virginia, USA, if you accidentally hit an animal with your car, you are free to take it home to eat.',
         answer: true),
   ];
+  void increaseQuestoinNumber(BuildContext context) {
+    if (questionNumber < _questionBank.length - 1) {
+      questionNumber++;
+    }
+  }
+
+
+  bool isFinished() {
+    if (questionNumber >= _questionBank.length - 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  String getQuestionText() {
+    return _questionBank[questionNumber].question;
+  }
+
+  bool getAnswerText() {
+    return _questionBank[questionNumber].answer;
+  }
 }

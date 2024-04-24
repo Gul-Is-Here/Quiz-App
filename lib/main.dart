@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quizler_app/question.dart';
 import 'package:quizler_app/quiz_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 QuizBrain quizBrain = QuizBrain();
 
@@ -29,9 +30,50 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  final List<Icon> scoreKeeper = [];
+  // this is the method to check the correct answer
+  void checkAnswer(bool pickedAnswer) {
+    bool checkCorrect = quizBrain.getAnswerText();
+    setState(() {
+      if (quizBrain.isFinished()) {
+        // This is an alert Dialog Box code
+        Alert(
+          context: context,
+          type: AlertType.success,
+          title: "Quiz Complete",
+          desc: "You Quiz is Complete by Clicking on restart you attempt again",
+          buttons: [
+            DialogButton(
+              onPressed: () {
+                quizBrain.questionNumber = 0;
+                quizBrain.scoreKeeper.clear();
+                Navigator.of(context).pop();
+              },
+              width: 120,
+              child: const Text(
+                "Restart",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
+        // checking conditions wheather to add correct and wrong icon according to user selection
+      } else if (checkCorrect == pickedAnswer) {
+        quizBrain.scoreKeeper.add(const Icon(
+          Icons.check,
+          color: Colors.green,
+        ));
+      } else {
+        quizBrain.scoreKeeper.add(const Icon(
+          Icons.close,
+          color: Colors.red,
+        ));
+      }
+    });
+    setState(() {
+      quizBrain.increaseQuestoinNumber(context);
+    });
+  }
 
-  int trackQuestionNumber = 0;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -44,7 +86,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                quizBrain.questionBank[trackQuestionNumber].question,
+                quizBrain.getQuestionText(),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 25.0,
@@ -62,7 +104,7 @@ class _QuizPageState extends State<QuizPage> {
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.green,
               ),
-              child: Text(
+              child: const Text(
                 'True',
                 style: TextStyle(
                   color: Colors.white,
@@ -70,26 +112,19 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                final checkAnswer =
-                    quizBrain.questionBank[trackQuestionNumber].answer;
-                if (checkAnswer == true) {}
-                //The user picked true.
-                setState(() {
-                  trackQuestionNumber = trackQuestionNumber + 1;
-                });
-                print(trackQuestionNumber);
+                checkAnswer(true);
               },
             ),
           ),
         ),
         Expanded(
           child: Padding(
-            padding: EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(15.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-              child: Text(
+              child: const Text(
                 'False',
                 style: TextStyle(
                   fontSize: 20.0,
@@ -97,26 +132,13 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                final checkAnswer =
-                    quizBrain.questionBank[trackQuestionNumber].answer;
-                if (checkAnswer == false) {}
-                //The user picked false.
-                setState(() {
-                  trackQuestionNumber = trackQuestionNumber + 1;
-                });
-                print(trackQuestionNumber);
+                checkAnswer(false);
               },
             ),
           ),
         ),
-        //TODO: Add a Row here as your score keeper
+        Row(children: [...quizBrain.scoreKeeper]),
       ],
     );
   }
 }
-
-/*
-question1: , false,
-question2:  true,
-question3:  true,
-*/
